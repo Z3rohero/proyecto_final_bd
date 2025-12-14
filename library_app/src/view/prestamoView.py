@@ -173,21 +173,21 @@ class PrestamoView(ft.Column):
         
         self.page.dialog = dialog
         dialog.open = True
-        self.page.update()
+        self.page.open(dialog)
     
     def confirmar_aprobacion(self, dialog, movimiento: Movimiento):
         try:
             self.controller.aprobar_prestamo(movimiento.id_movimiento)
             
             dialog.open = False
-            self.show_message("Préstamo aprobado exitosamente")
+            self.show_dialog_message("Préstamo Aprobado", "El préstamo ha sido aprobado correctamente.")
             
             # Recargar las tablas
             self.load_solicitudes()
             self.load_prestamos()
             
         except Exception as ex:
-            self.show_message(f"Error al aprobar préstamo: {str(ex)}", error=True)
+            self.show_dialog_message("Error al Aprobar Préstamo", f"Error al aprobar el préstamo: {str(ex)}", error=True)
         
         self.page.update()
     
@@ -210,21 +210,21 @@ class PrestamoView(ft.Column):
         
         self.page.dialog = dialog
         dialog.open = True
-        self.page.update()
+        self.page.open(dialog)
     
     def confirmar_rechazo(self, dialog, movimiento: Movimiento):
         try:
             self.controller.rechazar_solicitud(movimiento.id_movimiento)
             
             dialog.open = False
-            self.show_message("Solicitud rechazada")
+            self.show_dialog_message("Solicitud Rechazada", "La solicitud ha sido rechazada correctamente.", error=True)
             
             # Recargar las tablas
             self.load_solicitudes()
             self.load_prestamos()
             
         except Exception as ex:
-            self.show_message(f"Error al rechazar solicitud: {str(ex)}", error=True)
+            self.show_dialog_message("Error al Rechazar Solicitud", f"Error al rechazar la solicitud: {str(ex)}", error=True)
         
         self.page.update()
     
@@ -239,3 +239,18 @@ class PrestamoView(ft.Column):
         )
         self.page.snack_bar.open = True
         self.page.update()
+
+       
+    def show_dialog_message(self, title, message, error=False):
+        """Muestra un diálogo modal con un mensaje"""
+        dialog = ft.AlertDialog(
+            title=ft.Text(title, color=ft.Colors.RED if error else ft.Colors.GREEN),
+            content=ft.Text(message),
+            actions=[
+                ft.TextButton("Aceptar", on_click=lambda _: self.close_dialog(dialog))
+            ]
+        )
+        self.page.dialog = dialog
+        dialog.open = True
+        self.page.open(dialog)
+

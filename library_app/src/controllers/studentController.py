@@ -69,6 +69,109 @@ class StudentController:
     def get_material_authors(self, material: Material):
         """Obtiene los autores de un material"""
         return ", ".join([ma.autor.nombre for ma in material.autores])
+    
+    def get_all_materials_with_copies(self):
+        """Obtiene todos los materiales con copias disponibles y prestadas"""
+        estado_disponible = self.session.query(Estado).filter_by(nombre="disponible").first()
+        estado_prestado = self.session.query(Estado).filter_by(nombre="prestado").first()
+        
+        if not estado_disponible or not estado_prestado:
+            return []
+        
+        materiales = self.session.query(Material).all()
+        materiales_con_copias = []
+        
+        for material in materiales:
+            copias_disponibles = self.session.query(Copia).filter_by(
+                id_material=material.id_material,
+                id_estado=estado_disponible.id_estado
+            ).count()
+            
+            copias_prestadas = self.session.query(Copia).filter_by(
+                id_material=material.id_material,
+                id_estado=estado_prestado.id_estado
+            ).count()
+            
+            if copias_disponibles > 0 or copias_prestadas > 0:
+                materiales_con_copias.append({
+                    'material': material,
+                    'copias_disponibles': copias_disponibles,
+                    'copias_prestadas': copias_prestadas
+                })
+        
+        return materiales_con_copias
+    
+    def search_materials_with_copies(self, search_text: str):
+        """Busca materiales por título mostrando disponibles y prestadas"""
+        estado_disponible = self.session.query(Estado).filter_by(nombre="disponible").first()
+        estado_prestado = self.session.query(Estado).filter_by(nombre="prestado").first()
+        
+        if not estado_disponible or not estado_prestado:
+            return []
+        
+        materiales = self.session.query(Material).filter(
+            Material.titulo.ilike(f"%{search_text}%")
+        ).all()
+        
+        materiales_con_copias = []
+        
+        for material in materiales:
+            copias_disponibles = self.session.query(Copia).filter_by(
+                id_material=material.id_material,
+                id_estado=estado_disponible.id_estado
+            ).count()
+            
+            copias_prestadas = self.session.query(Copia).filter_by(
+                id_material=material.id_material,
+                id_estado=estado_prestado.id_estado
+            ).count()
+            
+            if copias_disponibles > 0 or copias_prestadas > 0:
+                materiales_con_copias.append({
+                    'material': material,
+                    'copias_disponibles': copias_disponibles,
+                    'copias_prestadas': copias_prestadas
+                })
+        
+        return materiales_con_copias
+    
+    def create_reservation(self, id_material: int, id_usuario: int):
+        """Crea una reserva de una copia prestada"""
+        # Buscar una copia prestada
+        estado_prestado = self.session.query(Estado).filter_by(nombre="prestado").first()
+        
+        if not estado_prestado:
+            raise Exception("No se encontró el estado 'prestado'")
+        
+        copia = self.session.query(Copia).filter_by(
+            id_material=id_material,
+            id_estado=estado_prestado.id_estado
+        ).first()
+        
+        if not copia:
+            raise Exception("No hay copias prestadas para reservar")
+        
+        # Verificar si el usuario ya tiene una reserva activa para esta copia
+        reserva_existente = self.session.query(Reserva).filter_by(
+            id_copia=copia.id_copia,
+            id_usuario=id_usuario,
+            estado="activa"
+        ).first()
+        
+        if reserva_existente:
+            raise Exception("Ya tienes una reserva activa para este material")
+        
+        # Crear la reserva
+        nueva_reserva = Reserva(
+            id_copia=copia.id_copia,
+            id_usuario=id_usuario,
+            estado="activa"
+        )
+        
+        self.session.add(nueva_reserva)
+        self.session.commit()
+        
+        return nueva_reserva
 
     def request_loan(self, id_material: int, id_usuario: int, dias: int):
         """Crea una solicitud de préstamo con estado reservado"""
