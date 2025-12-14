@@ -1,6 +1,7 @@
 import flet as ft
 from view.materialView import MaterialView
 from view.copiaView import CopiaView
+from view.prestamoView import PrestamoView
 
 class LibrarianView(ft.View):
     def __init__(self, page, auth_controller, on_logout):
@@ -66,7 +67,10 @@ class LibrarianView(ft.View):
                 page=self.page
             )
         elif index == 3:
-            self.content_area.content = ft.Text("Gestión de Préstamos")
+            self.content_area.content = PrestamoView(
+                session=self.auth.session,
+                page=self.page
+            )
         elif index == 4:
             self.content_area.content = ft.Text("Gestión de Reservas")
         elif index == 5:

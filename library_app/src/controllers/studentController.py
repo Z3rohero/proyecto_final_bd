@@ -98,6 +98,7 @@ class StudentController:
         # Crear movimiento con estado por defecto id = 3
         nuevo_movimiento = Movimiento(
             id_copia=copia.id_copia,
+            id_usuario=id_usuario,
             id_estado=3,
             fecha_devolucion=fecha_devolucion,
             detalle=f"Solicitud de préstamo de usuario {id_usuario} por {dias} días"

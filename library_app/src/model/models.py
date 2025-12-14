@@ -131,13 +131,16 @@ class Movimiento(Base):
     __tablename__ = 'movimiento'
     id_movimiento = Column(Integer, primary_key=True)
     id_copia = Column(Integer, ForeignKey('copia.id_copia', ondelete='SET NULL'), nullable=True)
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', ondelete='SET NULL'), nullable=True)
     id_estado = Column(Integer, ForeignKey('estado.id_estado'), nullable=False)
     fecha_solicitud = Column(DateTime, server_default=func.now(), nullable=False)
     fecha_devolucion = Column(Date, nullable=False)
     detalle = Column(Text)
     
+    # relaciones
     estado = relationship("Estado", back_populates="movimientos")
     copia_rel = relationship("Copia", back_populates="movimientos")
+    usuario = relationship("Usuario")
 
 # helper to create engine/session externally
 def get_engine(connection_string):
