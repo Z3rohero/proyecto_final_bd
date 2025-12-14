@@ -92,10 +92,13 @@ docker-compose restart app
 
 # Reconstruir la aplicación
 docker-compose up --build app
+<<<<<<< HEAD
 
 #Eliminar informacion de volumen
 
 docker-compose down -v
+=======
+>>>>>>> master
 ```
 
 ## Usuarios por Defecto

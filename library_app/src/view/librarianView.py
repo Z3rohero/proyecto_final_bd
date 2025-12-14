@@ -2,6 +2,7 @@ import flet as ft
 from view.materialView import MaterialView
 from view.copiaView import CopiaView
 from view.prestamoView import PrestamoView
+from view.userView import UserView
 
 class LibrarianView(ft.View):
     def __init__(self, page, auth_controller, on_logout):
@@ -42,20 +43,25 @@ class LibrarianView(ft.View):
             )
         ]
         
-        # Lugar donde se renderizan los CRUD
         self.content_area = ft.Container(
             expand=True
         )
         self.controls.append(self.content_area)
-
+        
+    
     # ---------------------------
     # Cambiar contenido segun tab
     # ---------------------------
     def tab_change(self, e):
-        index = e.control.selected_index
-
+        
+        index = e.control.selected_index or 0
+        
+        
         if index == 0:
-            self.content_area.content = ft.Text("CRUD de Usuarios")
+             self.content_area.content = UserView(
+            session=self.auth.session,
+                page=self.page
+            )
         elif index == 1:
             self.content_area.content = MaterialView(
             session=self.auth.session,

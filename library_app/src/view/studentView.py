@@ -2,6 +2,8 @@ import flet as ft
 from view.catalogView import CatalogView
 from view.myLoansView import MyLoansView
 from view.myReservationsView import MyReservationsView
+from sqlalchemy.orm import Session
+
 
 
 class StudentView(ft.View):
