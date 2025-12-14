@@ -74,6 +74,7 @@ class Estado(Base):
     nombre = Column(String(50), unique=True, nullable=False)
 
     copias = relationship("Copia", back_populates="estado_rel")
+    movimientos = relationship("Movimiento", back_populates="estado")
 
 
 
@@ -96,6 +97,8 @@ class Copia(Base):
     estado_rel = relationship("Estado", back_populates="copias")
     prestamos = relationship("Prestamo", back_populates="copia")
     reservas = relationship("Reserva", back_populates="copia")
+    movimientos = relationship("Movimiento", back_populates="copia_rel")
+
 
 
 
@@ -128,9 +131,13 @@ class Movimiento(Base):
     __tablename__ = 'movimiento'
     id_movimiento = Column(Integer, primary_key=True)
     id_copia = Column(Integer, ForeignKey('copia.id_copia', ondelete='SET NULL'), nullable=True)
-    accion = Column(String(50), nullable=False)
-    fecha = Column(DateTime, server_default=func.now())
+    id_estado = Column(Integer, ForeignKey('estado.id_estado'), nullable=False)
+    fecha_solicitud = Column(DateTime, server_default=func.now(), nullable=False)
+    fecha_devolucion = Column(Date, nullable=False)
     detalle = Column(Text)
+    
+    estado = relationship("Estado", back_populates="movimientos")
+    copia_rel = relationship("Copia", back_populates="movimientos")
 
 # helper to create engine/session externally
 def get_engine(connection_string):

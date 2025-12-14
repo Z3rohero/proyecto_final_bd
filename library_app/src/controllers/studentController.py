@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from model.models import Copia, Material, Prestamo, Reserva, Estado
+from model.models import Copia, Material, Prestamo, Reserva, Estado, Movimiento
 from datetime import date, timedelta
 
 
@@ -71,7 +71,7 @@ class StudentController:
         return ", ".join([ma.autor.nombre for ma in material.autores])
 
     def request_loan(self, id_material: int, id_usuario: int, dias: int):
-        """Crea una solicitud de préstamo"""
+        """Crea una solicitud de préstamo con estado reservado"""
         # Buscar una copia disponible
         estado_disponible = self.session.query(Estado).filter_by(nombre="disponible").first()
         
@@ -86,28 +86,29 @@ class StudentController:
         if not copia:
             raise Exception("No hay copias disponibles")
         
-        # Cambiar estado de la copia a "prestado"
-        estado_prestado = self.session.query(Estado).filter_by(nombre="prestado").first()
+        # Cambiar estado de la copia a "reservado"
+        estado_reservado = self.session.query(Estado).filter_by(nombre="reservado").first()
         
-        if not estado_prestado:
-            raise Exception("No se encontró el estado 'prestado'")
+        if not estado_reservado:
+            raise Exception("No se encontró el estado 'reservado'")
         
-        # Crear préstamo
-        nuevo_prestamo = Prestamo(
+        # Calcular fecha de devolución
+        fecha_devolucion = date.today() + timedelta(days=dias)
+        
+        # Crear movimiento con estado por defecto id = 3
+        nuevo_movimiento = Movimiento(
             id_copia=copia.id_copia,
-            id_usuario=id_usuario,
-            fecha_prestamo=date.today(),
-            fecha_devolucion_prevista=date.today() + timedelta(days=dias),
-            estado="activo",
-            multa=0
+            id_estado=3,
+            fecha_devolucion=fecha_devolucion,
+            detalle=f"Solicitud de préstamo de usuario {id_usuario} por {dias} días"
         )
         
-        copia.id_estado = estado_prestado.id_estado
+        copia.id_estado = estado_reservado.id_estado
         
-        self.session.add(nuevo_prestamo)
+        self.session.add(nuevo_movimiento)
         self.session.commit()
         
-        return nuevo_prestamo
+        return nuevo_movimiento
 
     # ========================================
     # MÉTODOS PARA PRÉSTAMOS
