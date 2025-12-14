@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-biblioteca
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: biblioteca_demo
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usuario -d biblioteca_demo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - biblioteca-network
+
+  # Aplicación Biblioteca
+  app:
+    build: .
+    container_name: biblioteca-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://usuario:password@postgres:5432/biblioteca_demo
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=biblioteca_demo
+      - DB_USER=usuario
+      - DB_PASSWORD=password
+    ports:
+      - "8550:8550"
+    volumes:
+      - ./src:/app/src
+      - ./storage:/app/storage
+    networks:
+      - biblioteca-network
+    command: >
+      sh -c "
+        echo 'Esperando a que la base de datos esté lista...' &&
+        sleep 5 &&
+        echo 'Ejecutando scripts de inicialización...' &&
+        python scripts/seed_roles.py &&
+        python scripts/seed_estado.py &&
+        python scripts/seed_material.py &&
+        echo 'Scripts ejecutados exitosamente todo oki doki' &&
+        echo 'Iniciando aplicación...' &&
+        python app.py
+      "
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  biblioteca-network:
+    driver: bridge

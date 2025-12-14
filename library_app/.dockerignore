@@ -1,0 +1,38 @@
+# Ignorar entorno virtual
+venv/
+env/
+.venv/
+
+# Ignorar archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ignorar archivos de configuración
+.env
+*.env
+!.env.example
+
+# Ignorar archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignorar datos de almacenamiento temporal
+storage/data/*
+storage/temp/*
+!storage/data/.gitkeep
+!storage/temp/.gitkeep
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar volúmenes de Docker
+postgres_data/

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "library"
+version = "0.1.0"
+description = ""
+authors = ["Z3rohero <109614528+Z3rohero@users.noreply.github.com>"]
+readme = "README.md"
+package-mode = false
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flet = ">=0.28.0"
+sqlalchemy = ">=2.0.0"
+psycopg2-binary = ">=2.9.0"
+python-dotenv = ">=1.0.0"
+bcrypt = ">=4.0.0"
+flet-web = ">=0.28.3,<0.29.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
