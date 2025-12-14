@@ -1,0 +1,17 @@
+venv
+library_app/model/__pycache__/usuario.cpython-310.pyc
+/library_app/model/__pycache__
+/library_app/controllers/__pycache__
+/library_app/view/__pycache__
+.vscode/settings.json
+/library_app/src/model/__pycache__
+/library_app/src/controllers/__pycache__
+/library_app/controllers/__pycache__
+/library_app/model/__pycache__
+/library_app/src/view/__pycache__
+/library_app/view/__pycache__
+/library_app/model/__pycache__
+/library_app/controllers/__pycache__
+/library_app/view/__pycache__
+/library_app/model/__pycache__
+/library_app/controllers/__pycache__
