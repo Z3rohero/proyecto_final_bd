@@ -81,5 +81,21 @@ class AuthController:
     
     def get_roles(self):
         return self.session.query(Rol).all()
+    
+    def email_exists(self, email: str) -> bool:
+        return (
+        self.session.query(Usuario)
+        .filter(Usuario.correo == email)
+        .first()
+        is not None
+    )
+
+    def username_exists(self, username: str) -> bool:
+        return (
+        self.session.query(Usuario)
+        .filter(Usuario.nombre == username)
+        .first()
+        is not None
+    )
 
 

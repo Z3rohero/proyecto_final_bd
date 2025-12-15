@@ -98,6 +98,14 @@ class RegisterView(ft.View):
             )
             return
 
+        if self.controller.username_exists(user):
+            self.show_dialog_message(
+                "Usuario existente",
+                "El nombre de usuario ya está registrado.",
+                error=True
+            )
+            return
+        
         if not self.valid_email(email):
             self.show_dialog_message(
                 "Correo inválido",
