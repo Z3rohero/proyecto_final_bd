@@ -50,6 +50,7 @@ services:
         python scripts/seed_roles.py &&
         python scripts/seed_estado.py &&
         python scripts/seed_material.py &&
+        python scripts/seed_constraints_indices.py &&
         echo 'Scripts ejecutados exitosamente todo oki doki' &&
         echo 'Iniciando aplicación...' &&
         python app.py

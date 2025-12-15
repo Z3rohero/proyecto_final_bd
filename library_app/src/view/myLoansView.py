@@ -98,7 +98,7 @@ class MyLoansView(ft.Column):
         
         self.page.dialog = dialog
         dialog.open = True
-        self.page.update()
+        self.page.open(dialog)
     
     def close_dialog(self, dialog):
         dialog.open = False
