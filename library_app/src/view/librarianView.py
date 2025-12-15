@@ -49,6 +49,12 @@ class LibrarianView(ft.View):
         )
         self.controls.append(self.content_area)
         
+        # Cargar la primera pestaña por defecto
+        self.content_area.content = UserView(
+            session=self.auth.session,
+            page=self.page
+        )
+        
     
     # ---------------------------
     # Cambiar contenido segun tab
@@ -83,10 +89,7 @@ class LibrarianView(ft.View):
                 session=self.auth.session,
                 page=self.page
             )
-        elif index == 5:
-            self.content_area.content = ft.Text("Gestión de Reservas")
-        elif index == 5:
-            self.content_area.content = ft.Text("Dashboard")
+
 
         self.page.update()
 
