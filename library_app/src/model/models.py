@@ -142,6 +142,23 @@ class Movimiento(Base):
     copia_rel = relationship("Copia", back_populates="movimientos")
     usuario = relationship("Usuario")
 
+class Multa(Base):
+    __tablename__ = 'multa'
+    id_multa = Column(Integer, primary_key=True)
+    id_prestamo = Column(Integer, ForeignKey('prestamo.id_prestamo', ondelete='RESTRICT'), nullable=False)
+    id_copia = Column(Integer, ForeignKey('copia.id_copia', ondelete='RESTRICT'), nullable=False)
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', ondelete='RESTRICT'), nullable=False)
+    dias_atraso = Column(Integer, nullable=False)
+    monto = Column(Numeric(10,2), nullable=False)
+    fecha_generacion = Column(DateTime, server_default=func.now(), nullable=False)
+    estado_pago = Column(String(20), nullable=False, default='pendiente')  # pendiente, pagada
+    fecha_pago = Column(DateTime, nullable=True)
+    
+    # relaciones
+    prestamo = relationship("Prestamo")
+    copia_rel = relationship("Copia")
+    usuario = relationship("Usuario")
+
 # helper to create engine/session externally
 def get_engine(connection_string):
     return create_engine(connection_string, echo=False, future=True)
